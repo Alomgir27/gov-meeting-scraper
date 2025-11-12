@@ -24,4 +24,5 @@ logs/
 domain_html/
 .cursor/
 *.pdf
-*.txt
+assignment_text.txt
+html_collector.py
