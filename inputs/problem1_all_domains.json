@@ -1,0 +1,13 @@
+{
+  "start_date": "2024-11-20",
+  "end_date": "2025-11-26",
+  "base_urls": [
+    "https://www.cityofventura.ca.gov/AgendaCenter",
+    "https://www.bethlehem-pa.gov/Calendar",
+    "https://www.lansdale.org/CivicMedia?CID=2024-Council-Meetings-26",
+    "https://www.facebook.com/DauphinCountyPA/videos",
+    "https://go.boarddocs.com/ca/acoe/Board.nsf/Public",
+    "https://simbli.eboardsolutions.com/SB_Meetings/SB_MeetingListing.aspx?S=36030373"
+  ]
+}
+
