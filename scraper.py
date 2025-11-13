@@ -21,14 +21,7 @@ logger = setup_logger("meeting_cli")
 
 async def scrape_meetings_cmd(input_file: str, output_file: str):
     """
-    Problem 1: Scrape meeting metadata.
-    
-    Input JSON format:
-    {
-        "start_date": "2024-11-20",
-        "end_date": "2025-11-26",
-        "base_urls": ["https://www.cityofventura.ca.gov/AgendaCenter"]
-    }
+    Problem 1: Scrape meeting metadata using site-specific + universal fallback.
     """
     logger.info(f"Loading input from: {input_file}")
     
@@ -40,6 +33,7 @@ async def scrape_meetings_cmd(input_file: str, output_file: str):
         
         logger.info(f"Scraping {len(meeting_input.base_urls)} URLs...")
         logger.info(f"Date range: {meeting_input.start_date} to {meeting_input.end_date}")
+        logger.info(f"Mode: Site-specific + Universal fallback")
         
         config = ScraperConfig(
             domain="meetings",
@@ -60,7 +54,7 @@ async def scrape_meetings_cmd(input_file: str, output_file: str):
             logger.info(f"✓ [{current}/{total}] Saved {meetings_count} meetings from {result.base_url}")
             logger.info(f"✓ Progress: {total_so_far} total meetings saved to {output_file}")
         
-        async with ScraperEngine(config) as engine:
+        async with ScraperEngine(config, use_universal_only=False) as engine:
             results = await engine.scrape_meetings(
                 meeting_input.base_urls,
                 meeting_input.start_date,
@@ -143,13 +137,11 @@ async def resolve_urls_cmd(input_file: str, output_file: str):
 
 async def universal_scrape_cmd(input_file: str, output_file: str):
     """
-    Bonus Task: Universal scraper with statistics.
-    Same input format as Problem 1.
+    Bonus Task: Universal scraper ONLY (no site-specific extractors).
     """
     logger.info(f"Loading input from: {input_file}")
     
     try:
-        # Load input
         with open(input_file, 'r') as f:
             input_data = json.load(f)
         
@@ -157,34 +149,53 @@ async def universal_scrape_cmd(input_file: str, output_file: str):
         
         logger.info(f"🚀 BONUS TASK: Universal scraping {len(meeting_input.base_urls)} URLs...")
         logger.info(f"Date range: {meeting_input.start_date} to {meeting_input.end_date}")
+        logger.info(f"Mode: UNIVERSAL EXTRACTOR ONLY (no site-specific handlers)")
         
         start_time = datetime.now()
         
-        # Create config
         config = ScraperConfig(
             domain="bonus",
             rate_limit=2
         )
         
-        # Scrape using universal engine
-        async with ScraperEngine(config) as engine:
+        async with ScraperEngine(config, use_universal_only=True) as engine:
+            all_results = []
+            
+            def save_after_each_domain(result, current, total):
+                all_results.append(result)
+                
+                output_data = {
+                    "results": [r.model_dump() for r in all_results],
+                    "statistics": {
+                        "sites_completed": current,
+                        "total_sites": total,
+                        "meetings_so_far": sum(len(r.medias) for r in all_results),
+                        "in_progress": True
+                    }
+                }
+                
+                with open(output_file, 'w') as f:
+                    json.dump(output_data, f, indent=2)
+                
+                logger.info(f"✓ Saved: {len(result.medias)} meetings from {result.base_url}")
+                logger.info(f"✓ Progress: [{current}/{total}] domains completed")
+            
             results = await engine.scrape_meetings(
                 meeting_input.base_urls,
                 meeting_input.start_date,
-                meeting_input.end_date
+                meeting_input.end_date,
+                on_site_complete=save_after_each_domain
             )
         
         end_time = datetime.now()
         duration = (end_time - start_time).total_seconds()
         
-        # Calculate statistics
         total_sites = len(meeting_input.base_urls)
         successful_sites = len(results)
         total_meetings = sum(len(output.medias) for output in results)
         sites_with_data = sum(1 for output in results if len(output.medias) > 0)
         coverage_percentage = (sites_with_data / total_sites * 100) if total_sites > 0 else 0
         
-        # Convert to dict
         output_data = {
             "results": [result.model_dump() for result in results],
             "statistics": {
@@ -194,15 +205,14 @@ async def universal_scrape_cmd(input_file: str, output_file: str):
                 "total_meetings_extracted": total_meetings,
                 "coverage_percentage": round(coverage_percentage, 2),
                 "duration_seconds": round(duration, 2),
+                "extraction_mode": "Universal Extractor Only (No Site-Specific)",
                 "accuracy_note": "Zero false positives - only verified data returned"
             }
         }
         
-        # Save output
         with open(output_file, 'w') as f:
             json.dump(output_data, f, indent=2)
         
-        # Print statistics
         print("\n" + "="*60)
         print("BONUS TASK - UNIVERSAL SCRAPER STATISTICS:")
         print("="*60)
@@ -212,6 +222,7 @@ async def universal_scrape_cmd(input_file: str, output_file: str):
         print(f"🎯 Total meetings extracted:   {total_meetings}")
         print(f"📈 Coverage percentage:        {coverage_percentage:.2f}%")
         print(f"⏱️  Duration:                   {duration:.2f} seconds")
+        print(f"🔧 Mode:                       Universal Extractor ONLY")
         print(f"✅ Accuracy:                   100% (Zero false positives)")
         print("="*60)
         

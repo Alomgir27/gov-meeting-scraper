@@ -3,6 +3,13 @@
     "base_url": "https://www.cityofventura.ca.gov/AgendaCenter",
     "medias": [
       {
+        "meeting_url": null,
+        "agenda_url": "https://www.cityofventura.ca.gov/AgendaCenter/ViewFile/Agenda/_11182025-3529",
+        "minutes_url": null,
+        "title": "City Council Closed Session/Regular Meeting",
+        "date": "2025-11-18"
+      },
+      {
         "meeting_url": "https://www.youtube.com/watch?v=3uQyYOUPCSw",
         "agenda_url": "https://www.cityofventura.ca.gov/AgendaCenter/ViewFile/Agenda/_11042025-3522",
         "minutes_url": "https://www.cityofventura.ca.gov/AgendaCenter/ViewFile/Minutes/_11042025-3522",
@@ -459,20 +466,6 @@
       },
       {
         "meeting_url": null,
-        "agenda_url": "https://www.cityofventura.ca.gov/AgendaCenter/ViewFile/Agenda/_08142025-3471",
-        "minutes_url": null,
-        "title": "Arts and Culture Commission Supplemental Packet 2 (8/14/2025)",
-        "date": "2025-08-14"
-      },
-      {
-        "meeting_url": null,
-        "agenda_url": "https://www.cityofventura.ca.gov/AgendaCenter/ViewFile/Agenda/_08142025-3476",
-        "minutes_url": null,
-        "title": "Arts and Culture Commission Supplemental Packet 3 (8/14/2025)",
-        "date": "2025-08-14"
-      },
-      {
-        "meeting_url": null,
         "agenda_url": "https://www.cityofventura.ca.gov/AgendaCenter/ViewFile/Agenda/_08142025-3454",
         "minutes_url": null,
         "title": "Arts and Culture Commission Regular Meeting (08/14/2025)",
@@ -483,6 +476,20 @@
         "agenda_url": "https://www.cityofventura.ca.gov/AgendaCenter/ViewFile/Agenda/_08142025-3462",
         "minutes_url": null,
         "title": "Arts and Culture Commission Supplemental Packet 1 (8/14/2025)",
+        "date": "2025-08-14"
+      },
+      {
+        "meeting_url": null,
+        "agenda_url": "https://www.cityofventura.ca.gov/AgendaCenter/ViewFile/Agenda/_08142025-3471",
+        "minutes_url": null,
+        "title": "Arts and Culture Commission Supplemental Packet 2 (8/14/2025)",
+        "date": "2025-08-14"
+      },
+      {
+        "meeting_url": null,
+        "agenda_url": "https://www.cityofventura.ca.gov/AgendaCenter/ViewFile/Agenda/_08142025-3476",
+        "minutes_url": null,
+        "title": "Arts and Culture Commission Supplemental Packet 3 (8/14/2025)",
         "date": "2025-08-14"
       },
       {
@@ -1731,31 +1738,10 @@
       },
       {
         "meeting_url": null,
-        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/2a11c4e1-d79a-4c8d-92e3-505d48f30ebf/COBCalendar_Agenda.aspx ",
-        "minutes_url": null,
-        "title": "Finance Commitee",
-        "date": "2025-09-16"
-      },
-      {
-        "meeting_url": "https://www.youtube.com/watch?v=BjMro6_xTHc ",
-        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/ee0db507-8865-47fe-89e2-ff366ae2ca43/COBCalendar_Agenda.aspx ",
-        "minutes_url": "https://www.bethlehem-pa.gov/getattachment/7d9a817e-7a4b-47b9-b4d6-f5d27d183f98/COBCalendar_MeetingAudio.aspx ",
-        "title": "City Council Meeting",
-        "date": "2025-04-01"
-      },
-      {
-        "meeting_url": null,
         "agenda_url": "https://www.bethlehem-pa.gov/getattachment/36a086a7-f494-4005-8fe5-79ee8e4eb130/COBCalendar_Agenda.aspx ",
         "minutes_url": null,
         "title": "Community Development Committee",
         "date": "2025-03-18"
-      },
-      {
-        "meeting_url": null,
-        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/12412cfd-de3e-4160-918b-a34c572d7eb2/COBCalendar_Agenda.aspx ",
-        "minutes_url": null,
-        "title": "Committee of the Whole Meeting",
-        "date": "2025-10-21"
       },
       {
         "meeting_url": null,
@@ -1765,32 +1751,11 @@
         "date": "2025-02-24"
       },
       {
-        "meeting_url": "https://www.youtube.com/watch?v=lk5JsmHwUxk ",
-        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/4da116a3-a5a7-489e-9621-abcb4208daff/COBCalendar_Agenda.aspx ",
-        "minutes_url": "https://www.bethlehem-pa.gov/getattachment/a60d804d-23a6-4958-83c6-ef975873f942/COBCalendar_MeetingAudio.aspx ",
-        "title": "City Council Meeting",
-        "date": "2024-12-03"
-      },
-      {
         "meeting_url": null,
-        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/0bfd179d-543b-4f1e-ac35-e3da56bf5ae2/COBCalendar_Agenda.aspx ",
-        "minutes_url": null,
-        "title": "City Council Meeting",
-        "date": "2025-06-24"
-      },
-      {
-        "meeting_url": null,
-        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/84a22c43-d7e7-4b6f-bca3-cb825d2dbe9b/COBCalendar_Agenda.aspx ",
+        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/71390ef5-79ef-4da6-ba40-9d0d58e3f82c/COBCalendar_Agenda.aspx ",
         "minutes_url": null,
         "title": "Finance Commitee",
-        "date": "2025-07-15"
-      },
-      {
-        "meeting_url": "https://www.youtube.com/watch?v=RUIM06ni4Kw ",
-        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/c9a00f5b-c7e6-4f6e-83a0-2547627bc915/COBCalendar_Agenda.aspx ",
-        "minutes_url": "https://www.bethlehem-pa.gov/getattachment/487bed88-1d0c-49c8-b143-d4bcbef1840c/COBCalendar_MeetingAudio.aspx ",
-        "title": "City Council Meeting",
-        "date": "2025-02-04"
+        "date": "2025-04-29"
       },
       {
         "meeting_url": null,
@@ -1808,24 +1773,66 @@
       },
       {
         "meeting_url": null,
-        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/e84e7576-1335-4cc7-b5f2-2848edb746f8/COBCalendar_Agenda.aspx ",
+        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/dc3c3656-7b3b-4487-9092-5e4112ab7ff0/COBCalendar_Agenda.aspx ",
         "minutes_url": null,
-        "title": "Community Development Committee",
-        "date": "2025-03-04"
-      },
-      {
-        "meeting_url": "https://www.youtube.com/watch?v=WmqlnPV31wk ",
-        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/809da23a-2441-4651-877b-8a468022cfac/COBCalendar_Agenda.aspx ",
-        "minutes_url": "https://www.bethlehem-pa.gov/getattachment/d5278d0b-2b01-492f-aeeb-9d6458703e14/COBCalendar_MeetingAudio.aspx ",
-        "title": "City Council Meeting",
-        "date": "2025-01-07"
+        "title": "Meeting Title:",
+        "date": "2025-11-10"
       },
       {
         "meeting_url": null,
-        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/7ae1edb4-fad4-4805-bb39-44f302e55bf4/COBCalendar_Agenda.aspx ",
+        "agenda_url": null,
+        "minutes_url": null,
+        "title": "City Council Meetings",
+        "date": "2025-11-10"
+      },
+      {
+        "meeting_url": null,
+        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/337a0253-1527-46c4-ad5e-53248bf96da9/COBCalendar_Agenda.aspx ",
+        "minutes_url": null,
+        "title": "Meeting Title:",
+        "date": "2025-11-20"
+      },
+      {
+        "meeting_url": null,
+        "agenda_url": null,
+        "minutes_url": null,
+        "title": "City Council Meetings",
+        "date": "2025-11-20"
+      },
+      {
+        "meeting_url": null,
+        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/84a22c43-d7e7-4b6f-bca3-cb825d2dbe9b/COBCalendar_Agenda.aspx ",
         "minutes_url": null,
         "title": "Finance Commitee",
-        "date": "2024-12-03"
+        "date": "2025-07-15"
+      },
+      {
+        "meeting_url": null,
+        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/00e1aa56-241e-4076-9ae6-8905156bb0ad/COBCalendar_Agenda.aspx ",
+        "minutes_url": null,
+        "title": "City Council Meeting",
+        "date": "2025-06-24"
+      },
+      {
+        "meeting_url": "https://www.youtube.com/watch?v=BjMro6_xTHc ",
+        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/ee0db507-8865-47fe-89e2-ff366ae2ca43/COBCalendar_Agenda.aspx ",
+        "minutes_url": "https://www.bethlehem-pa.gov/getattachment/7d9a817e-7a4b-47b9-b4d6-f5d27d183f98/COBCalendar_MeetingAudio.aspx ",
+        "title": "City Council Meeting",
+        "date": "2025-04-01"
+      },
+      {
+        "meeting_url": null,
+        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/27494c25-696b-435f-9f3b-76e350c1a27d/COBCalendar_Agenda.aspx ",
+        "minutes_url": null,
+        "title": "Meeting Title:",
+        "date": "2025-10-29"
+      },
+      {
+        "meeting_url": null,
+        "agenda_url": null,
+        "minutes_url": null,
+        "title": "Committee Meetings",
+        "date": "2025-10-29"
       },
       {
         "meeting_url": "https://www.youtube.com/watch?v=jZHXlrr9JA4 ",
@@ -1836,17 +1843,87 @@
       },
       {
         "meeting_url": null,
+        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/12412cfd-de3e-4160-918b-a34c572d7eb2/COBCalendar_Agenda.aspx ",
+        "minutes_url": null,
+        "title": "Committee of the Whole Meeting",
+        "date": "2025-10-21"
+      },
+      {
+        "meeting_url": null,
+        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/f61e08e2-df5f-4bb7-8116-e9747cce67ae/COBCalendar_Agenda.aspx ",
+        "minutes_url": null,
+        "title": "Meeting Title:",
+        "date": "2024-11-25"
+      },
+      {
+        "meeting_url": null,
+        "agenda_url": null,
+        "minutes_url": null,
+        "title": "City Council Meetings",
+        "date": "2024-11-25"
+      },
+      {
+        "meeting_url": null,
+        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/2a11c4e1-d79a-4c8d-92e3-505d48f30ebf/COBCalendar_Agenda.aspx ",
+        "minutes_url": null,
+        "title": "Finance Commitee",
+        "date": "2025-09-16"
+      },
+      {
+        "meeting_url": null,
+        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/7ae1edb4-fad4-4805-bb39-44f302e55bf4/COBCalendar_Agenda.aspx ",
+        "minutes_url": null,
+        "title": "Finance Commitee",
+        "date": "2024-12-03"
+      },
+      {
+        "meeting_url": null,
+        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/e84e7576-1335-4cc7-b5f2-2848edb746f8/COBCalendar_Agenda.aspx ",
+        "minutes_url": null,
+        "title": "Community Development Committee",
+        "date": "2025-03-04"
+      },
+      {
+        "meeting_url": null,
         "agenda_url": "https://www.bethlehem-pa.gov/getattachment/e47c16e7-b361-4067-9183-d32500800a8e/COBCalendar_Agenda.aspx ",
         "minutes_url": null,
         "title": "Committee of the Whole Meeting",
         "date": "2025-10-07"
       },
       {
+        "meeting_url": "https://www.youtube.com/watch?v=RUIM06ni4Kw ",
+        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/c9a00f5b-c7e6-4f6e-83a0-2547627bc915/COBCalendar_Agenda.aspx ",
+        "minutes_url": "https://www.bethlehem-pa.gov/getattachment/487bed88-1d0c-49c8-b143-d4bcbef1840c/COBCalendar_MeetingAudio.aspx ",
+        "title": "City Council Meeting",
+        "date": "2025-02-04"
+      },
+      {
+        "meeting_url": "https://www.youtube.com/watch?v=WmqlnPV31wk ",
+        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/809da23a-2441-4651-877b-8a468022cfac/COBCalendar_Agenda.aspx ",
+        "minutes_url": "https://www.bethlehem-pa.gov/getattachment/d5278d0b-2b01-492f-aeeb-9d6458703e14/COBCalendar_MeetingAudio.aspx ",
+        "title": "City Council Meeting",
+        "date": "2025-01-07"
+      },
+      {
         "meeting_url": null,
-        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/71390ef5-79ef-4da6-ba40-9d0d58e3f82c/COBCalendar_Agenda.aspx ",
+        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/4e4ffa51-0bd2-4e54-970f-92549a3daa71/COBCalendar_Agenda.aspx ",
         "minutes_url": null,
-        "title": "Finance Commitee",
-        "date": "2025-04-29"
+        "title": "Meeting Title:",
+        "date": "2025-11-12"
+      },
+      {
+        "meeting_url": null,
+        "agenda_url": null,
+        "minutes_url": null,
+        "title": "City Council Meetings",
+        "date": "2025-11-12"
+      },
+      {
+        "meeting_url": "https://www.youtube.com/watch?v=lk5JsmHwUxk ",
+        "agenda_url": "https://www.bethlehem-pa.gov/getattachment/4da116a3-a5a7-489e-9621-abcb4208daff/COBCalendar_Agenda.aspx ",
+        "minutes_url": "https://www.bethlehem-pa.gov/getattachment/a60d804d-23a6-4958-83c6-ef975873f942/COBCalendar_MeetingAudio.aspx ",
+        "title": "City Council Meeting",
+        "date": "2024-12-03"
       }
     ]
   },
@@ -1927,57 +2004,7 @@
   },
   {
     "base_url": "https://www.facebook.com/DauphinCountyPA/videos",
-    "medias": [
-      {
-        "meeting_url": "https://www.facebook.com/100064568477099/videos/1354658713066657",
-        "agenda_url": null,
-        "minutes_url": null,
-        "title": "Dauphin County Prison Town Hall meeting 11/10/2025",
-        "date": "2025-11-10"
-      },
-      {
-        "meeting_url": "https://web.facebook.com/DauphinCountyPA/videos/dauphin-county-commissioners-workshop-meeting-11122025/728567373633436/",
-        "agenda_url": null,
-        "minutes_url": null,
-        "title": "Dauphin County Commissioners' Workshop meeting 11/12/2025",
-        "date": "2025-11-12"
-      },
-      {
-        "meeting_url": "https://web.facebook.com/DauphinCountyPA/videos/dauphin-county-2026-budget-hearing-111025-afternoon/626977670410089/",
-        "agenda_url": null,
-        "minutes_url": null,
-        "title": "Dauphin County 2026 Budget Hearing 11/10/25 Afternoon",
-        "date": "2025-11-10"
-      },
-      {
-        "meeting_url": "https://web.facebook.com/DauphinCountyPA/videos/dauphin-county-2026-budget-hearing-111025-morning/1189278383077815/",
-        "agenda_url": null,
-        "minutes_url": null,
-        "title": "Dauphin County 2026 Budget Hearing 11/10/25 morning",
-        "date": "2025-11-10"
-      },
-      {
-        "meeting_url": "https://web.facebook.com/DauphinCountyPA/videos/dauphin-county-commissioners-legislative-meeting-1152025/2288073781665193/",
-        "agenda_url": null,
-        "minutes_url": null,
-        "title": "Dauphin County Commissioners' Legislative meeting 11/5/2025",
-        "date": "2025-11-05"
-      },
-      {
-        "meeting_url": "https://web.facebook.com/DauphinCountyPA/videos/dauphin-county-commissioners-workshop-meeting-10292025/802668019211471/",
-        "agenda_url": null,
-        "minutes_url": null,
-        "title": "Dauphin County Commissioners' Workshop meeting 10/29/2025",
-        "date": "2025-10-29"
-      },
-      {
-        "meeting_url": "https://web.facebook.com/DauphinCountyPA/videos/dauphin-county-commissioners-legislative-meeting-102225/1831608501054262/",
-        "agenda_url": null,
-        "minutes_url": null,
-        "title": "Dauphin County Commissioners' Legislative Meeting 10/22/25",
-        "date": "2025-10-22"
-      }
-    ]
+    "medias": []
   },
   {
     "base_url": "https://go.boarddocs.com/ca/acoe/Board.nsf/Public",

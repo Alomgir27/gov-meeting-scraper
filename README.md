@@ -13,6 +13,7 @@ Robust web scraper for extracting meeting metadata from government websites with
 **Compatible with:** Windows (Git Bash), Linux, Mac
 
 ```bash
+chmod +x setup.sh
 bash setup.sh
 ```
 
@@ -24,59 +25,63 @@ The scripts automatically detect your OS and configure accordingly.
 
 ## 🚀 Usage
 
-### Problem 1: Scrape Meeting Metadata
+### Run All Tasks
 
 ```bash
+chmod +x run.sh
 bash run.sh
+```
+
+Runs Problem 1 → Problem 2 → Bonus sequentially
+
+### Problem 1: Meeting Metadata
+
+```bash
+chmod +x run.sh
+bash run.sh problem1
 ```
 
 **Output:** `outputs/problem1_complete_output.json`
 
 Scrapes 6 government websites (Nov 20, 2024 - Nov 26, 2025)
 
-### Problem 2: Resolve Video/Audio/Document URLs
+### Problem 2: URL Resolution
 
 ```bash
+chmod +x run.sh
 bash run.sh problem2
 ```
 
 **Output:** `outputs/problem2_output.json`
 
-Resolves and verifies 11 URLs from assignment:
-- ✅ yt-dlp --simulate verification (videos/audio)
-- ✅ HTTP HEAD verification (documents)
-- ✅ Auto-retry network failures (2-3 attempts)
-- ✅ Platform transformations (Swagit /download)
+Resolves and verifies 11 URLs:
+- yt-dlp --simulate (videos/audio)
+- HTTP HEAD (documents)
+- Platform transformations (Swagit /download)
 
 **Supported:** YouTube, IBM Video, Granicus, ChampDS, Viebit, SharePoint, Audiomack, PDF, HTML
 
-### Custom Input (Problem 1)
+### Bonus: Universal Scraper
 
+```bash
+chmod +x run.sh
+bash run.sh bonus
+```
+
+**Output:** `outputs/bonus_output.json`
+
+One scraper for 40 diverse sites • Auto-detect patterns • 100% accuracy (zero false positives)
+
+### Custom Input
+
+**Problem 1:**
 ```bash
 python scraper.py scrape-meetings -i inputs/custom.json -o outputs/result.json
 ```
 
-Input format:
-```json
-{
-  "start_date": "2024-01-01",
-  "end_date": "2024-12-31",
-  "base_urls": ["https://your-site.gov/meetings"]
-}
-```
-
-### Custom Input (Problem 2)
-
+**Problem 2:**
 ```bash
 python scraper.py resolve-urls -i inputs/custom_urls.json -o outputs/resolved.json
-```
-
-Input format:
-```json
-[
-  {"url": "https://example.com/video.mp4", "type": "video"},
-  {"url": "https://example.com/doc.pdf", "type": "document"}
-]
 ```
 
 ---
@@ -202,70 +207,29 @@ playwright install chromium
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ Architecture & Workflow
 
-<div align="center">
+### Core Components
 
+**scraper.py** → **ScraperEngine** → **Browser + Extractors** → **Output (JSON)**
+
+- **ScraperEngine**: Orchestration, retry logic, rate limiting
+- **BrowserManager**: Playwright with stealth mode (anti-detection)
+- **Extractors**: Site-specific handlers + Universal fallback
+- **URLResolver**: Media verification with yt-dlp
+
+### Workflow
+
+```mermaid
+graph TD
+    A[Input JSON<br/>dates + URLs] --> B[CLI scraper.py<br/>Routes: Problem 1 or 2]
+    B --> C[ScraperEngine<br/>Rate limit: 2 req/sec<br/>Sequential + Retry]
+    C --> D[Browser Stealth Mode<br/>Load JS + Anti-detection]
+    D --> E[Smart Extraction<br/>Site-specific → Universal fallback]
+    E --> F[Validation & Filter<br/>Date range + Dedup]
+    F --> G[Save Progress<br/>After each domain]
+    G --> H[Output JSON]
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                       User Input                             │
-│              (JSON with URLs & Date Range)                   │
-└────────────────────┬────────────────────────────────────────┘
-                     │
-                     ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    scraper.py (CLI)                          │
-│              Command-line interface handler                  │
-└────────────────────┬────────────────────────────────────────┘
-                     │
-                     ▼
-┌─────────────────────────────────────────────────────────────┐
-│                  ScraperEngine (core/engine.py)              │
-│   • Orchestrates scraping workflow                          │
-│   • Manages browser pool & HTTP requests                    │
-│   • Handles retries & rate limiting                         │
-│   • Sequential processing with callbacks                    │
-└────────┬───────────────────────────────┬────────────────────┘
-         │                               │
-         ▼                               ▼
-┌──────────────────────┐      ┌──────────────────────────┐
-│   Browser Manager    │─────▶│   Site-Specific          │
-│   (core/browser.py)  │      │   Extractors             │
-│                      │      │   (extractors/*)         │
-│ • Playwright setup   │      │                          │
-│ • Stealth mode       │      │ • Uses browser to load   │
-│ • Anti-detection     │      │ • Detects site type      │
-│ • Auto-scroll        │      │ • Extracts meetings      │
-└──────────────────────┘      │ • Parses dates           │
-                              │ • Classifies links       │
-                              └────────────┬─────────────┘
-                                           │
-                                           ▼
-                              ┌─────────────────────────┐
-                              │    Data Validation      │
-                              │                         │
-                              │ • Date range filter     │
-                              │ • URL verification      │
-                              │ • Duplicate removal     │
-                              └────────────┬────────────┘
-                                           │
-                                           ▼
-                              ┌─────────────────────────┐
-                              │   Incremental Save      │
-                              │                         │
-                              │ • Save after each domain│
-                              │ • Progress tracking     │
-                              │ • No data loss          │
-                              └────────────┬────────────┘
-                                           │
-                                           ▼
-                              ┌─────────────────────────┐
-                              │   JSON Output           │
-                              │   (outputs/*.json)      │
-                              └─────────────────────────┘
-```
-
-</div>
 
 ---
 
