@@ -6,6 +6,14 @@ Robust web scraper for extracting meeting metadata from government websites with
 
 ---
 
+## 🎥 Demo Video
+
+Watch the 5-minute walkthrough of the codebase and implementation:
+
+**[View Demo Video on OneDrive](https://1drv.ms/v/c/31ad0010debfa02b/Ebk_klBOIo9AvDw_Vq8AX9YBwotOnVeOKCh5z-jG9_orIg)**
+
+---
+
 ## 📦 Setup
 
 **Prerequisites:** Python 3.8+
