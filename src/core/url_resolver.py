@@ -1,4 +1,4 @@
-"""Video and document URL resolver with yt-dlp verification."""
+"""URL resolver for videos, audio, and documents with yt-dlp verification."""
 import re
 import asyncio
 from typing import Optional, List
@@ -9,9 +9,9 @@ from bs4 import BeautifulSoup
 from ..utils.logger import setup_logger
 
 
-class VideoURLResolver:
+class URLResolver:
     def __init__(self, browser_manager=None, rate_limiter=None):
-        self.logger = setup_logger("video_resolver")
+        self.logger = setup_logger("url_resolver")
         self.browser_manager = browser_manager
         self.rate_limiter = rate_limiter
         self.http_client = httpx.AsyncClient(
@@ -91,39 +91,39 @@ class VideoURLResolver:
         
         return None
     
-    async def _extract_from_page(self, url: str) -> List[str]:
-        """Extract video URLs from page using browser."""
+    async def _extract_from_page(self, url: str, max_retries: int = 1) -> List[str]:
+        """Extract video URLs from page using browser with retry logic."""
         extracted_urls = []
         
         if not self.browser_manager:
             return extracted_urls
         
-        try:
-            page = await self.browser_manager.new_page()
-            if not page:
-                return extracted_urls
-            
+        for attempt in range(max_retries + 1):
+            page = None
             try:
-                await page.goto(url, wait_until='networkidle', timeout=30000)
+                page = await self.browser_manager.new_page()
+                if not page:
+                    if attempt < max_retries:
+                        await asyncio.sleep(2)
+                        continue
+                    return extracted_urls
+                
+                await page.goto(url, wait_until='domcontentloaded', timeout=20000)
                 html = await page.content()
                 
                 soup = BeautifulSoup(html, 'lxml')
                 
-                # Extract from video tags
                 for video_tag in soup.find_all('video'):
                     if video_tag.get('src'):
                         extracted_urls.append(urljoin(url, video_tag.get('src')))
-                    
                     for source in video_tag.find_all('source'):
                         if source.get('src'):
                             extracted_urls.append(urljoin(url, source.get('src')))
                 
-                # Extract from iframes
                 for iframe in soup.find_all('iframe'):
                     if iframe.get('src'):
                         extracted_urls.append(urljoin(url, iframe.get('src')))
                 
-                # Extract from scripts
                 for script in soup.find_all('script'):
                     if script.string:
                         video_urls = re.findall(
@@ -133,7 +133,6 @@ class VideoURLResolver:
                         for video_url in video_urls:
                             extracted_urls.append(video_url.strip('"\''))
                 
-                # Extract from data attributes
                 for elem in soup.find_all(attrs={'data-video-url': True}):
                     extracted_urls.append(urljoin(url, elem['data-video-url']))
                 
@@ -141,76 +140,132 @@ class VideoURLResolver:
                     data_src = elem['data-src']
                     if any(ext in data_src.lower() for ext in ['.mp4', '.m3u8', 'video', 'media']):
                         extracted_urls.append(urljoin(url, data_src))
-                        
-            finally:
-                await page.close()
-            
-        except Exception as e:
-            self.logger.error(f"Error extracting from page {url}: {str(e)}")
+                
+                if page:
+                    await page.close()
+                return extracted_urls
+                
+            except Exception as e:
+                if page:
+                    await page.close()
+                
+                error_msg = str(e).lower()
+                is_network_error = any(err in error_msg for err in [
+                    'timeout', 'connection', 'network', 'err_name_not_resolved'
+                ])
+                
+                if is_network_error and attempt < max_retries:
+                    self.logger.info(f"Network error extracting {url}, retry {attempt + 1}/{max_retries}")
+                    await asyncio.sleep(2)
+                    continue
+                
+                if attempt == max_retries:
+                    self.logger.warning(f"Failed to extract from {url} after {max_retries + 1} attempts")
         
         return extracted_urls
     
-    async def _verify_with_ytdlp(self, url: str) -> bool:
+    async def _verify_with_ytdlp(self, url: str, max_retries: int = 2) -> bool:
         """
-        Verify URL works with yt-dlp using --simulate.
+        Verify URL works with yt-dlp using --simulate with retry logic.
         
         Args:
             url: URL to verify
+            max_retries: Maximum retry attempts for network issues
         
         Returns:
             True if yt-dlp can handle the URL
         """
-        try:
-            process = await asyncio.create_subprocess_exec(
-                'yt-dlp',
-                '--simulate',
-                '--no-warnings',
-                '--quiet',
-                url,
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE
-            )
-            
-            stdout, stderr = await asyncio.wait_for(process.communicate(), timeout=30.0)
-            
-            if process.returncode == 0:
-                return True
-            
-            # Some URLs work even with certain error messages
-            stderr_text = stderr.decode('utf-8', errors='ignore').lower()
-            if 'private video' in stderr_text or 'requires authentication' in stderr_text:
-                return True
-            
-            return False
-            
-        except asyncio.TimeoutError:
-            self.logger.warning(f"yt-dlp verification timeout for {url}")
-            return False
-        except FileNotFoundError:
-            self.logger.error("yt-dlp not found. Please install: pip install yt-dlp")
-            return False
-        except Exception as e:
-            self.logger.error(f"yt-dlp verification error for {url}: {str(e)}")
-            return False
+        for attempt in range(max_retries + 1):
+            process = None
+            try:
+                process = await asyncio.create_subprocess_exec(
+                    'yt-dlp',
+                    '--simulate',
+                    '--no-warnings',
+                    '--quiet',
+                    '--socket-timeout', '15',
+                    url,
+                    stdout=asyncio.subprocess.PIPE,
+                    stderr=asyncio.subprocess.PIPE
+                )
+                
+                stdout, stderr = await asyncio.wait_for(process.communicate(), timeout=45.0)
+                
+                if process.returncode == 0:
+                    return True
+                
+                stderr_text = stderr.decode('utf-8', errors='ignore').lower()
+                if 'private video' in stderr_text or 'requires authentication' in stderr_text:
+                    return True
+                
+                if 'unable to download' in stderr_text or 'http error' in stderr_text:
+                    if attempt < max_retries:
+                        wait_time = 2 ** attempt
+                        self.logger.info(f"Network error for {url}, retry {attempt + 1}/{max_retries} in {wait_time}s")
+                        await asyncio.sleep(wait_time)
+                        continue
+                
+                return False
+                
+            except asyncio.TimeoutError:
+                if process:
+                    try:
+                        process.kill()
+                        await process.wait()
+                    except:
+                        pass
+                if attempt < max_retries:
+                    self.logger.info(f"Timeout for {url}, retry {attempt + 1}/{max_retries}")
+                    await asyncio.sleep(2)
+                    continue
+                self.logger.warning(f"yt-dlp timeout after {max_retries + 1} attempts: {url}")
+                return False
+            except FileNotFoundError:
+                self.logger.error("yt-dlp not found. Please install: pip install yt-dlp")
+                return False
+            except Exception as e:
+                if process:
+                    try:
+                        process.kill()
+                        await process.wait()
+                    except:
+                        pass
+                if attempt < max_retries:
+                    self.logger.info(f"Error for {url}, retry {attempt + 1}/{max_retries}: {str(e)[:100]}")
+                    await asyncio.sleep(2)
+                    continue
+                self.logger.error(f"yt-dlp error after {max_retries + 1} attempts: {str(e)[:100]}")
+                return False
+        
+        return False
     
-    async def _verify_document_url(self, url: str) -> bool:
+    async def _verify_document_url(self, url: str, max_retries: int = 2) -> bool:
         """
-        Verify document URL is accessible.
+        Verify document URL is accessible with retry logic.
         
         Args:
             url: Document URL to verify
+            max_retries: Maximum retry attempts
         
         Returns:
             True if document is accessible
         """
-        try:
-            # Simple HEAD request to check if document is accessible
-            response = await self.http_client.head(url, follow_redirects=True, timeout=15.0)
-            return response.status_code == 200
-            
-        except Exception:
-            # If HEAD fails, assume URL is valid and let downstream handle it
-            return True
+        for attempt in range(max_retries + 1):
+            try:
+                response = await self.http_client.head(url, follow_redirects=True, timeout=15.0)
+                return response.status_code == 200
+            except (httpx.TimeoutException, httpx.NetworkError, httpx.ConnectError) as e:
+                if attempt < max_retries:
+                    wait_time = 1 + attempt
+                    self.logger.info(f"Network error for document {url}, retry {attempt + 1}/{max_retries}")
+                    await asyncio.sleep(wait_time)
+                    continue
+                self.logger.warning(f"Document verification failed after retries: {url}")
+                return True
+            except Exception:
+                return True
+        
+        return True
     
     async def batch_resolve(self, url_list: List[dict]) -> List[str]:
         """

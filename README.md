@@ -10,11 +10,15 @@ Robust web scraper for extracting meeting metadata from government websites with
 
 **Prerequisites:** Python 3.8+
 
+**Compatible with:** Windows (Git Bash), Linux, Mac
+
 ```bash
 bash setup.sh
 ```
 
 This installs dependencies, Playwright browser, and creates necessary directories.
+
+The scripts automatically detect your OS and configure accordingly.
 
 ---
 
@@ -26,19 +30,33 @@ This installs dependencies, Playwright browser, and creates necessary directorie
 bash run.sh
 ```
 
-Scrapes 6 government websites (Nov 20, 2024 - Nov 26, 2025):
-- cityofventura.ca.gov/AgendaCenter
-- bethlehem-pa.gov/Calendar
-- lansdale.org/CivicMedia
-- facebook.com/DauphinCountyPA/videos
-- go.boarddocs.com/ca/acoe/Board.nsf/Public
-- simbli.eboardsolutions.com (S=36030373)
+**Output:** `outputs/problem1_complete_output.json`
 
-**Output:** `outputs/problem1_complete_output.json` (saves after each domain)
+Scrapes 6 government websites (Nov 20, 2024 - Nov 26, 2025)
 
-### Custom Input
+### Problem 2: Resolve Video/Audio/Document URLs
 
-Create input file:
+```bash
+bash run.sh problem2
+```
+
+**Output:** `outputs/problem2_output.json`
+
+Resolves and verifies 11 URLs from assignment:
+- ✅ yt-dlp --simulate verification (videos/audio)
+- ✅ HTTP HEAD verification (documents)
+- ✅ Auto-retry network failures (2-3 attempts)
+- ✅ Platform transformations (Swagit /download)
+
+**Supported:** YouTube, IBM Video, Granicus, ChampDS, Viebit, SharePoint, Audiomack, PDF, HTML
+
+### Custom Input (Problem 1)
+
+```bash
+python scraper.py scrape-meetings -i inputs/custom.json -o outputs/result.json
+```
+
+Input format:
 ```json
 {
   "start_date": "2024-01-01",
@@ -47,26 +65,25 @@ Create input file:
 }
 ```
 
-Run:
+### Custom Input (Problem 2)
+
 ```bash
-python scraper.py scrape-meetings -i inputs/your_input.json -o outputs/your_output.json
+python scraper.py resolve-urls -i inputs/custom_urls.json -o outputs/resolved.json
 ```
 
-### Problem 2: Resolve URLs
-
-```bash
-python scraper.py resolve-urls -i examples/problem2_input.json -o outputs/problem2_output.json
-```
-
-### Bonus Task: Universal Scraper
-
-```bash
-python scraper.py universal-scrape -i examples/bonus_input.json -o outputs/bonus_output.json
+Input format:
+```json
+[
+  {"url": "https://example.com/video.mp4", "type": "video"},
+  {"url": "https://example.com/doc.pdf", "type": "document"}
+]
 ```
 
 ---
 
-## 📋 Input/Output
+## 📋 Input/Output Formats
+
+### Problem 1
 
 **Input:**
 ```json
@@ -79,19 +96,33 @@ python scraper.py universal-scrape -i examples/bonus_input.json -o outputs/bonus
 
 **Output:**
 ```json
+[{
+  "base_url": "https://example.gov/meetings",
+  "medias": [{
+    "meeting_url": "https://youtube.com/watch?v=...",
+    "agenda_url": "https://example.gov/agenda.pdf",
+    "minutes_url": "https://example.gov/minutes.pdf",
+    "title": "City Council Meeting",
+    "date": "2024-11-20"
+  }]
+}]
+```
+
+### Problem 2
+
+**Input:**
+```json
 [
-  {
-    "base_url": "https://example.gov/meetings",
-    "medias": [
-      {
-        "meeting_url": "https://www.youtube.com/watch?v=...",
-        "agenda_url": "https://example.gov/agenda.pdf",
-        "minutes_url": "https://example.gov/minutes.pdf",
-        "title": "City Council Meeting",
-        "date": "2024-11-20"
-      }
-    ]
-  }
+  {"url": "https://swagit.com/videos/123", "type": "audio"},
+  {"url": "https://example.gov/doc.pdf", "type": "document"}
+]
+```
+
+**Output:**
+```json
+[
+  "https://swagit.com/videos/123/download",
+  "https://example.gov/doc.pdf"
 ]
 ```
 
@@ -102,35 +133,53 @@ python scraper.py universal-scrape -i examples/bonus_input.json -o outputs/bonus
 ```
 scraping/
 ├── scraper.py              # CLI interface
-├── setup.sh                # Installation
-├── run.sh                  # Run Problem 1
+├── setup.sh                # Installation script
+├── run.sh                  # Quick run (Problem 1 & 2)
 ├── inputs/                 # Input JSON files
+│   ├── problem1_all_domains.json
+│   └── problem2_input.json
 ├── outputs/                # Generated outputs (incremental saves)
+│   ├── problem1_complete_output.json
+│   └── problem2_output.json
 ├── logs/                   # Application logs
 └── src/
-    ├── core/               # Engine & browser management
-    ├── extractors/         # Site-specific extraction logic
-    ├── storage/            # Data models
+    ├── core/               # Core services
+    │   ├── engine.py       # Main orchestrator
+    │   ├── browser.py      # Browser management
+    │   ├── stealth.py      # Anti-detection
+    │   └── url_resolver.py # URL verification (Problem 2)
+    ├── extractors/         # Site-specific extraction
+    │   ├── base_extractor.py
+    │   ├── site_handlers.py
+    │   └── site_specific/  # Individual site handlers
+    ├── storage/            # Data models & persistence
+    │   ├── models.py
+    │   ├── meeting_models.py
+    │   └── writer.py
     └── utils/              # Helpers & logging
+        ├── logger.py
+        ├── helpers.py
+        └── error_detector.py
 ```
 
 ---
 
 ## 🔧 Configuration
 
-Edit `src/storage/models.py`:
-- **Rate Limit**: `rate_limit=2` (requests/sec per domain)
-- **Max Retries**: `max_retries=3`
-- **Browser Timeout**: `timeout=60` (seconds)
+Edit `src/storage/models.py` and `src/core/url_resolver.py` for custom settings.
+
+**Key settings:**
+- Rate limit: 2 req/sec per domain
+- Retries: 2-3 attempts for network errors
+- Timeouts: 20-45s depending on operation
 
 ---
 
 ## 🐛 Troubleshooting
 
-**Virtual environment:**
+**Virtual environment not found:**
 ```bash
-source .venv/Scripts/activate  # Windows
-source .venv/bin/activate      # Linux/Mac
+bash setup.sh
 ```
 
 **Browser missing:**
@@ -138,13 +187,18 @@ source .venv/bin/activate      # Linux/Mac
 playwright install chromium
 ```
 
+**Python not found:**
+- Windows: Install from python.org
+- Linux: `sudo apt install python3 python3-pip`
+- Mac: `brew install python3`
+
 ---
 
 ## 🎯 Assignment Coverage
 
-✅ Problem 1: Meeting metadata with date filtering  
-✅ Problem 2: Video/document URL resolution  
-✅ Bonus Task: Universal scraper (40+ sites)
+✅ **Problem 1**: Meeting metadata scraping (6 domains)  
+✅ **Problem 2**: URL resolution with retry logic (11 URLs)  
+✅ **Bonus Task**: Universal scraper (40+ sites)
 
 ---
 

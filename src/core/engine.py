@@ -6,8 +6,8 @@ from bs4 import BeautifulSoup
 
 from .browser import BrowserManager
 from .stealth import StealthConfig
+from .url_resolver import URLResolver
 from ..extractors.base_extractor import MeetingExtractor
-from ..extractors.video_resolver import VideoURLResolver
 from ..extractors.site_handlers import needs_special_collection, get_site_htmls
 from ..storage.models import ScraperConfig
 from ..storage.meeting_models import MeetingOutput, MeetingMetadata
@@ -29,16 +29,16 @@ class ScraperEngine:
         )
         self.browser_manager = BrowserManager(stealth_config)
         self.extractor = MeetingExtractor()
-        self.video_resolver = None
+        self.url_resolver = None
         
     async def __aenter__(self):
         await self.browser_manager.start()
-        self.video_resolver = VideoURLResolver(self.browser_manager, rate_limiter=self.rate_limiter)
+        self.url_resolver = URLResolver(self.browser_manager, rate_limiter=self.rate_limiter)
         return self
         
     async def __aexit__(self, exc_type, exc_val, exc_tb):
-        if self.video_resolver:
-            await self.video_resolver.close()
+        if self.url_resolver:
+            await self.url_resolver.close()
         await self.browser_manager.close()
     
     async def scrape_meetings(self, base_urls: List[str], start_date: str, end_date: str, 
@@ -217,6 +217,6 @@ class ScraperEngine:
         return list(seen_dict.values())
     
     async def resolve_urls(self, url_list: List[dict]) -> List[str]:
-        if not self.video_resolver:
-            raise ValueError("Video resolver not initialized")
-        return await self.video_resolver.batch_resolve(url_list)
+        if not self.url_resolver:
+            raise ValueError("URL resolver not initialized")
+        return await self.url_resolver.batch_resolve(url_list)
