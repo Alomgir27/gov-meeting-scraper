@@ -139,32 +139,35 @@ python scraper.py resolve-urls -i inputs/custom_urls.json -o outputs/resolved.js
 scraping/
 ├── scraper.py              # CLI interface
 ├── setup.sh                # Installation script
-├── run.sh                  # Quick run (Problem 1 & 2)
+├── run.sh                  # Quick run script
 ├── inputs/                 # Input JSON files
 │   ├── problem1_all_domains.json
-│   └── problem2_input.json
-├── outputs/                # Generated outputs (incremental saves)
+│   ├── problem2_input.json
+│   └── bonus_input.json
+├── outputs/                # Generated outputs
 │   ├── problem1_complete_output.json
-│   └── problem2_output.json
+│   ├── problem2_output.json
+│   └── bonus_output.json
 ├── logs/                   # Application logs
 └── src/
-    ├── core/               # Core services
-    │   ├── engine.py       # Main orchestrator
-    │   ├── browser.py      # Browser management
+    ├── core/               # Core orchestration
+    │   ├── engine.py       # Main scraper engine
+    │   ├── browser.py      # Browser manager
     │   ├── stealth.py      # Anti-detection
-    │   └── url_resolver.py # URL verification (Problem 2)
-    ├── extractors/         # Site-specific extraction
+    │   └── url_resolver.py # URL verification
+    ├── extractors/         # Extraction logic
     │   ├── base_extractor.py
-    │   ├── site_handlers.py
-    │   └── site_specific/  # Individual site handlers
-    ├── storage/            # Data models & persistence
+    │   ├── site_registry.py
+    │   ├── link_classifier.py
+    │   ├── site_specific/  # Site handlers
+    │   └── universal/      # Universal extractor
+    ├── storage/            # Data models
     │   ├── models.py
-    │   ├── meeting_models.py
-    │   └── writer.py
-    └── utils/              # Helpers & logging
+    │   └── meeting_models.py
+    └── utils/              # Utilities
         ├── logger.py
         ├── helpers.py
-        └── error_detector.py
+        └── patterns.py
 ```
 
 ---
@@ -184,6 +187,7 @@ Edit `src/storage/models.py` and `src/core/url_resolver.py` for custom settings.
 
 **Virtual environment not found:**
 ```bash
+chmod +x setup.sh
 bash setup.sh
 ```
 
@@ -222,10 +226,10 @@ playwright install chromium
 
 ```mermaid
 graph TD
-    A[Input JSON<br/>dates + URLs] --> B[CLI scraper.py<br/>Routes: Problem 1 or 2]
+    A[Input JSON<br/>dates + URLs] --> B[CLI scraper.py<br/>Problem 1 / 2 / Bonus]
     B --> C[ScraperEngine<br/>Rate limit: 2 req/sec<br/>Sequential + Retry]
     C --> D[Browser Stealth Mode<br/>Load JS + Anti-detection]
-    D --> E[Smart Extraction<br/>Site-specific → Universal fallback]
+    D --> E[Smart Extraction<br/>Site-specific → Universal]
     E --> F[Validation & Filter<br/>Date range + Dedup]
     F --> G[Save Progress<br/>After each domain]
     G --> H[Output JSON]
