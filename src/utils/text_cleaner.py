@@ -1,4 +1,12 @@
-"""Clean and normalize extracted text."""
+"""
+Text normalization utilities removing unicode artifacts, dates, and extra whitespace.
+
+Cleaning Functions:
+- remove_unicode_chars: Strip non-ASCII characters
+- clean_title: Remove date prefixes, posted timestamps, normalize whitespace
+- clean_url: Validate and normalize URLs
+- normalize_text: Replace unicode dashes, spaces, zero-width characters
+"""
 import re
 import unicodedata
 from typing import Optional

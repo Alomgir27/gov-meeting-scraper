@@ -1,4 +1,13 @@
-"""Date parsing utilities for meeting metadata extraction."""
+"""
+Flexible date parsing and validation supporting multiple formats and range checking.
+
+Supported Formats:
+- ISO: 2025-11-20
+- US: 11/20/2025, 11-20-2025
+- Long: November 20, 2025
+- Short: Nov 20, 2025
+- Fuzzy parsing with dateutil fallback
+"""
 import re
 from datetime import datetime, date
 from typing import Optional

@@ -1,4 +1,12 @@
-"""Enhanced link extraction with parent/sibling checking."""
+"""
+Link enhancer extracting additional links from parent and sibling DOM elements for complete data collection.
+
+Enhancement Methods:
+- check_parent_links: Extract from parent container
+- check_sibling_links: Check previous and next siblings
+- merge_links: Combine results prioritizing non-null values
+- extract_all_links: Full extraction from container hierarchy
+"""
 from typing import Dict, Optional
 from urllib.parse import urljoin
 from bs4 import Tag

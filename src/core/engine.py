@@ -1,4 +1,14 @@
-"""Core scraping engine - orchestrates meeting scraping and URL resolution."""
+"""
+Core engine orchestrating meeting extraction, pagination handling, and URL resolution with intelligent retry logic.
+
+Main Methods:
+- scrape_meetings: Sequential site scraping with progress callbacks
+- resolve_urls: Batch URL resolution for videos and documents
+- _scrape_single_site: Single site extraction with site-specific or universal fallback
+- _fetch_page: Smart page fetching with JS detection and error-based retry
+- _scrape_paginated_pages: Automatic pagination detection and traversal
+- _enhance_with_detail_pages: Navigate to detail pages for missing links
+"""
 import asyncio
 import re
 from typing import List, Optional

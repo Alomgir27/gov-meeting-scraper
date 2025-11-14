@@ -1,4 +1,12 @@
-"""Site-specific extractor registry."""
+"""
+Site-specific extractor registry dynamically loading and routing platform-optimized extraction logic.
+
+Registry Pattern:
+- register_extractor: Register (check_func, extract_func) pairs
+- get_extractor: Match URL to registered extractors
+- Dynamic imports prevent import errors from missing modules
+- Graceful fallback to universal extractor
+"""
 from typing import List, Optional, Callable
 from bs4 import BeautifulSoup
 

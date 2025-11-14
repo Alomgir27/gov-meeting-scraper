@@ -1,4 +1,12 @@
-"""Detect and handle JavaScript-heavy sites."""
+"""
+JavaScript-heavy site detector with platform-specific wait strategies for dynamic content loading.
+
+Detected Platforms:
+- NovusAgenda: Wait for RadGrid table population
+- TownCloud: Wait for tc-table tbody
+- DataTables: Generic wait for AJAX content
+- React/Angular/Vue: Extended wait for framework rendering
+"""
 import re
 from typing import Optional
 

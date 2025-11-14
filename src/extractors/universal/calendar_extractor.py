@@ -1,4 +1,12 @@
-"""Calendar-style meeting extraction."""
+"""
+Calendar-style meeting extractor for year/month hierarchical page structures.
+
+Extraction Process:
+- Locate year headings (h1, h2, h3) with 4-digit years
+- Find month sections under each year
+- Extract meeting containers within month sections
+- Parse dates, titles, and links from containers
+"""
 from typing import List
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup

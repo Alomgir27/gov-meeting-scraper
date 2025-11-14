@@ -1,4 +1,17 @@
-"""Centralized regex patterns and constants for meeting extraction."""
+"""
+Centralized regex patterns, keywords, and constants for meeting data extraction.
+
+Pattern Categories:
+- Date patterns: Multiple formats (ISO, US, long, short)
+- Year patterns: Detection and validation
+- Month patterns: Full and abbreviated names
+- Meeting keywords: Container detection
+- Link keywords: Agenda, minutes, video classification
+- Platform detection: Video streaming services
+- File extensions: Documents and videos
+- Pagination patterns: Navigation keywords and selectors
+- Validation constraints: Title length, year range
+"""
 import re
 
 # Date Patterns - Full formats with year

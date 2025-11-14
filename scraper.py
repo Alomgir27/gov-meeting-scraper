@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 """
-Command-line interface for meeting scraper.
-Provides easy access to Problem 1, Problem 2, and Bonus Task functionality.
+CLI for meeting scraper handling Problem 1 (metadata scraping), Problem 2 (URL resolution), and Bonus Task (universal extraction).
+
+Main Functions:
+- scrape_meetings_cmd: Extract meeting metadata using site-specific or universal strategies
+- resolve_urls_cmd: Resolve video/document URLs to direct downloadable links
+- universal_scrape_cmd: Extract meetings using only universal extractor (bonus task)
+- create_example_inputs: Generate example input JSON files for testing
 """
 import asyncio
 import argparse

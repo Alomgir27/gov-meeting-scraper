@@ -1,4 +1,13 @@
-"""Meeting-specific data models."""
+"""
+Pydantic models for meeting metadata including input validation and output serialization.
+
+Data Models:
+- MeetingMetadata: Single meeting with date, title, and URLs (agenda, minutes, video)
+- MeetingInput: Request parameters (date range, base URLs)
+- MeetingOutput: Response container (base_url, list of meetings)
+- URLResolutionInput: URL resolution request (url, type)
+- URLResolutionOutput: Resolution result (original, resolved, success, error)
+"""
 from datetime import datetime, date
 from typing import Optional, List
 from pydantic import BaseModel, Field, field_validator

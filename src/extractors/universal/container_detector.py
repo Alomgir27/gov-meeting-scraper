@@ -1,4 +1,13 @@
-"""Container detection and validation logic."""
+"""
+Container detection using heuristics to identify meeting-related DOM elements.
+
+Detection Heuristics:
+- Class/ID contains meeting keywords (meeting, agenda, event, item)
+- Contains date pattern and meeting keywords in text
+- Has appropriate depth and link structure
+- Minimum quality score threshold
+- Size constraints (not too small, not too large)
+"""
 import re
 from typing import List
 from bs4 import BeautifulSoup, Tag

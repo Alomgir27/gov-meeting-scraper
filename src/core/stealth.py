@@ -1,3 +1,13 @@
+"""
+Anti-detection stealth configuration with user-agent rotation, viewport randomization, and fingerprint masking.
+
+Key Techniques:
+- User-agent rotation from realistic browser profiles
+- Viewport randomization for natural fingerprinting
+- Canvas fingerprinting noise injection
+- WebGL vendor spoofing
+- Navigator properties masking (webdriver, plugins, permissions)
+"""
 import random
 from typing import Optional
 from dataclasses import dataclass

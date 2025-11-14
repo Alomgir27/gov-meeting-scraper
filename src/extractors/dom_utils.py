@@ -1,4 +1,13 @@
-"""DOM extraction utilities for meeting data."""
+"""
+DOM utilities for text extraction, link classification, and URL normalization.
+
+Utility Functions:
+- extract_text_from_element: Clean text extraction from tags
+- find_links_in_element: Collect all anchor elements
+- get_full_url: Convert relative to absolute URLs
+- classify_link_type: Detect agenda/minutes/video from href and text
+- extract_date_from_attributes: Parse dates from data attributes
+"""
 from typing import Optional, List
 from urllib.parse import urljoin
 from bs4 import Tag

@@ -1,4 +1,14 @@
-"""Site-specific handlers for special scraping needs."""
+"""
+Site-specific handler dispatcher for platforms requiring custom data collection strategies.
+
+Supported Platforms:
+- Ventura: Custom API-based collection
+- Bethlehem: Multi-year navigation
+- Lansdale: Calendar-based extraction
+- Facebook: Event parsing
+- BoardDocs: Meeting navigation
+- eBoardSolutions: Board meeting extraction
+"""
 from typing import List
 
 

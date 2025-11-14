@@ -1,4 +1,11 @@
-"""Link classification utilities."""
+"""
+Link utility functions for video platform detection and URL classification.
+
+Video Detection:
+- Platform domains (YouTube, Vimeo, Swagit, Granicus, etc.)
+- Video keywords (watch, recording, stream, media)
+- File extensions (.mp4, .webm, .m3u8)
+"""
 from bs4 import Tag
 
 from ...utils.patterns import VIDEO_EXTENSIONS, VIDEO_KEYWORDS, VIDEO_PLATFORMS

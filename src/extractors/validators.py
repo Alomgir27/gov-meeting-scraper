@@ -1,4 +1,13 @@
-"""Strict validation to prevent false positives."""
+"""
+Data validators ensuring meeting metadata quality and preventing false positives through strict validation.
+
+Validation Rules:
+- validate_url: Check proper http/https scheme and netloc
+- validate_date: Enforce YYYY-MM-DD format
+- validate_title: Enforce length constraints (5-300 chars)
+- validate_meeting_data: Composite validation for complete records
+- deduplicate_meetings: Remove duplicates by date + URL key
+"""
 from typing import Optional, Dict
 from urllib.parse import urlparse
 from ..utils.patterns import TITLE_MIN_LENGTH, TITLE_MAX_LENGTH, COMPILED_PATTERNS

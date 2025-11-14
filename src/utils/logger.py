@@ -1,3 +1,13 @@
+"""
+Logger setup with JSON file output and console streaming for structured logging.
+
+Logger Configuration:
+- Console handler: Formatted text output (INFO level)
+- File handler: JSON-structured logs (DEBUG level)
+- Automatic log directory creation
+- ISO timestamp formatting
+- Exception tracking with stack traces
+"""
 import logging
 import json
 from pathlib import Path

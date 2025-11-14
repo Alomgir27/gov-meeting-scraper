@@ -1,4 +1,12 @@
-"""Click calendar navigation buttons to access all data."""
+"""
+Calendar navigator clicking year selection buttons to collect multi-year meeting data.
+
+Navigation Strategy:
+- Detects year buttons, links, and select dropdowns
+- Clicks each relevant year within date range
+- Uses HTML hashing to detect content changes
+- Returns unique HTML for each year page
+"""
 import hashlib
 from typing import List, Set
 from bs4 import BeautifulSoup

@@ -1,4 +1,12 @@
-"""Navigate to detail pages to extract additional links."""
+"""
+Detail page navigator extracting additional agenda, minutes, and video links from dedicated meeting pages.
+
+Navigation Logic:
+- Detects single-link containers pointing to detail pages
+- Identifies "detail", "view", "more" keywords
+- Navigates to detail page and extracts all link types
+- Returns agenda, minutes, and video URLs
+"""
 import asyncio
 from typing import Dict, Optional
 from urllib.parse import urljoin

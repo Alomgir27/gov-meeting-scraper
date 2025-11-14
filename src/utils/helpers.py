@@ -1,4 +1,11 @@
-"""Simple utilities for rate limiting and URL normalization."""
+"""
+Rate limiting, URL normalization, and validation utilities.
+
+Utilities:
+- RateLimiter: Token bucket rate limiting with acquire() async method
+- normalize_url: Convert relative URLs to absolute with base URL
+- is_valid_url: Validate URL has proper scheme and netloc
+"""
 import asyncio
 from urllib.parse import urlparse, urljoin
 

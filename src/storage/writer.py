@@ -1,3 +1,12 @@
+"""
+JSON data writer serializing scraped meeting data to formatted output files.
+
+Writer Features:
+- Automatic output directory creation
+- JSON serialization with 2-space indentation
+- UTF-8 encoding for international characters
+- Returns output file path
+"""
 import json
 from pathlib import Path
 from typing import List

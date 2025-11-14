@@ -1,4 +1,12 @@
-"""Year extraction from headings and context."""
+"""
+Year extractor identifying context years from headings and surrounding elements.
+
+Year Detection:
+- Search ancestor headings for 4-digit years
+- Check parent/grandparent elements
+- Validate year is within reasonable range (2010-2030)
+- Return most recent valid year found
+"""
 from typing import Optional
 from datetime import datetime
 from bs4 import BeautifulSoup, Tag

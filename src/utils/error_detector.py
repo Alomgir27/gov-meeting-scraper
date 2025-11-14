@@ -1,3 +1,17 @@
+"""
+Error type detection and retry decision logic for timeout, network, and bot-detection errors.
+
+Error Types:
+- TIMEOUT: Connection/read timeouts
+- NETWORK: Connection failures, DNS errors
+- BOT_DETECTION: Access denied, CAPTCHA challenges
+- CLOUDFLARE: Cloudflare protection pages
+- SERVER_ERROR: 5xx HTTP status codes
+- RATE_LIMIT: 429 status or rate limit messages
+- UNKNOWN: Unclassified errors
+
+Retry Strategy: TIMEOUT, NETWORK, SERVER_ERROR, BOT_DETECTION, CLOUDFLARE are retriable
+"""
 from enum import Enum
 from typing import Optional
 

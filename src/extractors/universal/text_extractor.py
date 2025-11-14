@@ -1,4 +1,13 @@
-"""Text and title extraction utilities."""
+"""
+Text and title extractor cleaning and normalizing meeting titles from various formats.
+
+Title Extraction:
+- Remove date prefixes from titles
+- Extract from headings (h1-h6) in container
+- Fallback to strong/b tags
+- Remove meeting keywords if title is mostly keywords
+- Clean unicode and normalize whitespace
+"""
 from typing import List
 from bs4 import BeautifulSoup, Tag
 

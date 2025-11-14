@@ -1,4 +1,14 @@
-"""Main orchestrator for universal meeting extraction."""
+"""
+Universal extraction orchestrator coordinating multi-strategy meeting detection across diverse page structures.
+
+Extraction Strategies:
+1. detect_page_type: Identify structure (table/calendar/list/paragraph/container)
+2. Table extraction: Parse tabular meeting data
+3. Calendar extraction: Extract from year/month hierarchies
+4. Paragraph extraction: Split dense paragraphs into meetings
+5. Container extraction: Generic DOM container detection
+6. Deduplication: Remove duplicate meetings by date + URLs
+"""
 from typing import List
 from bs4 import BeautifulSoup
 

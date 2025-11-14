@@ -1,4 +1,12 @@
-"""Universal link classification based on keywords and patterns."""
+"""
+Universal link classifier using keyword scoring to categorize agenda, minutes, and video URLs.
+
+Classification Strategy:
+- Score links based on keyword matches in text and href
+- Bonus points for file extensions (.pdf, .mp4, .m3u8)
+- Bonus points for video platforms (YouTube, Vimeo, Swagit, Granicus)
+- Return highest-scoring link for each category
+"""
 from typing import Dict, Optional
 from urllib.parse import urljoin
 

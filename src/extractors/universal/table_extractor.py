@@ -1,4 +1,13 @@
-"""Table-style meeting extraction."""
+"""
+Table-based meeting extractor parsing tabular meeting data structures.
+
+Table Processing:
+- Detect header row for column identification
+- Map columns to data types (date, title, agenda, minutes, video)
+- Extract data from each row with proper column alignment
+- Handle colspan and complex table structures
+- Validate extracted data before adding to results
+"""
 from typing import List
 from bs4 import BeautifulSoup
 

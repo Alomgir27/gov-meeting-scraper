@@ -1,4 +1,13 @@
-"""Pre-detect page structure to select optimal extraction strategy."""
+"""
+Page structure detector identifying optimal extraction strategy (table, calendar, list, or container-based).
+
+Detection Patterns:
+- table: Large tables with 3+ rows
+- calendar: Year and month headings structure
+- list: List items with date patterns
+- paragraph: Dense paragraphs with dates and bold text
+- container: Default fallback for generic layouts
+"""
 from bs4 import BeautifulSoup
 from ..utils.patterns import COMPILED_PATTERNS
 

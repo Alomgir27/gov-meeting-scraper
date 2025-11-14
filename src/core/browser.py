@@ -1,4 +1,12 @@
-"""Simple browser manager for Playwright automation."""
+"""
+Playwright browser manager with stealth configuration and resource blocking for optimized web scraping.
+
+Key Features:
+- Automatic stealth script injection to bypass bot detection
+- Resource blocking (images, fonts, CSS, media) for faster page loads
+- Context recreation with fingerprint rotation on detection
+- Async context manager support for clean lifecycle management
+"""
 import asyncio
 from typing import Optional
 from playwright.async_api import async_playwright, Browser, BrowserContext, Page

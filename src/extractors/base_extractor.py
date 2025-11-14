@@ -1,4 +1,12 @@
-"""Meeting metadata extractor."""
+"""
+Meeting extractor dispatcher routing between site-specific and universal extraction strategies.
+
+Extraction Flow:
+1. Check for site-specific extractor in registry
+2. Apply site-specific logic if available
+3. Fallback to universal extractor for unknown sites
+4. Filter results by date range
+"""
 from typing import List
 from bs4 import BeautifulSoup
 

@@ -1,4 +1,13 @@
-"""Universal date extraction utilities."""
+"""
+Universal date extractor parsing dates from text, attributes, and contextual elements.
+
+Extraction Sources:
+1. Data attributes (data-date, data-meeting-date, datetime)
+2. Direct text content with regex patterns
+3. Parent/ancestor elements for context
+4. Year extraction from headings when date lacks year
+5. Fallback to current year if no context found
+"""
 import re
 from typing import Optional
 from datetime import datetime
