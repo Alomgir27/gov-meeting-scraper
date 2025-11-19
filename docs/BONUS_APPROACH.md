@@ -1,15 +1,5 @@
 # Bonus Task: Universal Scraper Architecture
 
-## 🎯 The Challenge
-
-Build **one scraper** for 40+ government websites with completely different:
-
-- **Structures**: Tables, calendars, lists, or dense paragraphs
-- **Technologies**: Static HTML, React/Vue/Angular, AJAX-loaded content
-- **Navigation**: Pagination, year filters, detail pages, infinite scroll
-
-**Core Problem**: A single hardcoded pattern won't work. The scraper must intelligently adapt to each site while maintaining **100% accuracy** (zero false positives).
-
 ---
 
 ## 🏗️ Solution Architecture
