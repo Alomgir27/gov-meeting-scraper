@@ -217,6 +217,8 @@ playwright install chromium
 ✅ **Problem 2**: URL resolution with retry logic (11 URLs)  
 ✅ **Bonus Task**: Universal scraper (40+ sites)
 
+📖 **[Bonus Task Approach & Architecture](docs/BONUS_APPROACH.md)**
+
 ---
 
 ## 🏗️ Architecture & Workflow
@@ -231,6 +233,8 @@ playwright install chromium
 - **URLResolver**: Media verification with yt-dlp
 
 ### Workflow
+
+For detailed architecture diagrams and flowcharts, see **[Architecture Documentation](docs/architecture_diagram.md)**.
 
 ```mermaid
 graph TD

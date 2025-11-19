@@ -1,8 +1,8 @@
 """
 Core engine orchestrating meeting extraction, pagination handling, and URL resolution with intelligent retry logic.
 
-Main Methods:
-- scrape_meetings: Sequential site scraping with progress callbacks
+Key Methods:
+- scrape_meetings: Sequential site scraping with progress callbacks and retry logic
 - resolve_urls: Batch URL resolution for videos and documents
 - _scrape_single_site: Single site extraction with site-specific or universal fallback
 - _fetch_page: Smart page fetching with JS detection and error-based retry
@@ -23,6 +23,7 @@ from ..extractors.site_handlers import needs_special_collection, get_site_htmls
 from ..extractors.detail_navigator import should_navigate_to_detail, extract_from_detail_page
 from ..extractors.calendar_navigator import get_all_year_pages
 from ..extractors.js_site_detector import is_js_heavy_site, wait_for_js_content
+from ..extractors.validators import deduplicate_meetings
 from ..storage.models import ScraperConfig
 from ..storage.meeting_models import MeetingOutput, MeetingMetadata
 from ..utils.logger import setup_logger
@@ -60,6 +61,11 @@ class ScraperEngine:
     
     async def scrape_meetings(self, base_urls: List[str], start_date: str, end_date: str, 
                              on_site_complete=None) -> List[MeetingOutput]:
+        """
+        Scrape meetings from multiple sites sequentially.
+        Processes sites one by one to respect rate limits and allows incremental saving.
+        Returns list of MeetingOutput with all extracted meetings per site.
+        """
         if not self.extractor:
             raise ValueError("Extractor not initialized")
         
@@ -90,7 +96,11 @@ class ScraperEngine:
         return outputs
     
     async def _enhance_with_detail_pages(self, meetings: List[MeetingMetadata], base_url: str) -> List[MeetingMetadata]:
-        """Navigate to detail pages to extract additional links."""
+        """
+        Navigate to detail pages to extract missing agenda/minutes/video links.
+        Only navigates if meeting has a detail page URL and is missing links.
+        Enhances incomplete meetings with additional data from detail pages.
+        """
         enhanced_meetings = []
         
         for meeting in meetings:
@@ -135,6 +145,11 @@ class ScraperEngine:
         return enhanced_meetings
     
     async def _scrape_single_site(self, base_url: str, start_date: str, end_date: str) -> MeetingOutput:
+        """
+        Extract meetings from a single site using site-specific or universal strategy.
+        Handles special collection methods, pagination, year navigation, and detail pages.
+        Returns MeetingOutput with all meetings found within date range.
+        """
         self.logger.info(f"Scraping: {base_url}")
         
         try:
@@ -173,7 +188,7 @@ class ScraperEngine:
             if paginated_meetings:
                 meetings.extend(paginated_meetings)
             
-            meetings = self._deduplicate(meetings)
+            meetings = deduplicate_meetings(meetings)
             
             if self.use_universal_only and meetings:
                 self.logger.info(f"Enhancing {len(meetings)} meetings with detail page navigation...")
@@ -188,7 +203,11 @@ class ScraperEngine:
     
     
     async def _fetch_page(self, url: str) -> Optional[str]:
-        """Fetch page with smart retry based on error type."""
+        """
+        Fetch page HTML with intelligent retry based on error type.
+        Handles JS-heavy sites with wait for content rendering.
+        Retries on timeout/network errors, rotates fingerprint on bot detection.
+        """
         max_retries = 2
         
         for attempt in range(max_retries + 1):
@@ -247,6 +266,11 @@ class ScraperEngine:
         return None
     
     async def _scrape_paginated_pages(self, html: str, base_url: str, start_date: str, end_date: str) -> List[MeetingMetadata]:
+        """
+        Auto-detect and scrape pagination links (Next, Page 2, etc.).
+        Searches for pagination keywords and numbered page links.
+        Limits to 10 pages maximum to prevent infinite loops.
+        """
         meetings = []
         max_pages = 10
         visited_urls = {base_url}
@@ -313,26 +337,11 @@ class ScraperEngine:
         
         return meetings
     
-    def _deduplicate(self, meetings: List[MeetingMetadata]) -> List[MeetingMetadata]:
-        seen_dict = {}
-        
-        for meeting in meetings:
-            key = (meeting.date, meeting.title)
-            
-            if key in seen_dict:
-                existing = seen_dict[key]
-                if meeting.meeting_url and not existing.meeting_url:
-                    existing.meeting_url = meeting.meeting_url
-                if meeting.agenda_url and not existing.agenda_url:
-                    existing.agenda_url = meeting.agenda_url
-                if meeting.minutes_url and not existing.minutes_url:
-                    existing.minutes_url = meeting.minutes_url
-            else:
-                seen_dict[key] = meeting
-        
-        return list(seen_dict.values())
-    
     async def resolve_urls(self, url_list: List[dict]) -> List[str]:
+        """
+        Resolve and verify multiple URLs concurrently using URLResolver.
+        Returns list of downloadable URLs verified with yt-dlp or HTTP HEAD.
+        """
         if not self.url_resolver:
             raise ValueError("URL resolver not initialized")
         return await self.url_resolver.batch_resolve(url_list)

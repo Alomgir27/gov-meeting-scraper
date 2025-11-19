@@ -2,12 +2,13 @@
 Universal extraction orchestrator coordinating multi-strategy meeting detection across diverse page structures.
 
 Extraction Strategies:
-1. detect_page_type: Identify structure (table/calendar/list/paragraph/container)
+1. detect_all_page_types: Identify ALL applicable structures (table/calendar/list/paragraph/container)
 2. Table extraction: Parse tabular meeting data
 3. Calendar extraction: Extract from year/month hierarchies
-4. Paragraph extraction: Split dense paragraphs into meetings
-5. Container extraction: Generic DOM container detection
-6. Deduplication: Remove duplicate meetings by date + URLs
+4. List extraction: Extract from list items with dates
+5. Paragraph extraction: Split dense paragraphs into meetings
+6. Container extraction: Generic DOM container detection
+7. Deduplication: Remove duplicate meetings by date + URLs
 """
 from typing import List
 from bs4 import BeautifulSoup
@@ -19,7 +20,7 @@ from ...utils.patterns import COMPILED_PATTERNS
 from ..date_parser import is_date_in_range
 from ..link_enhancer import extract_all_links
 from ..validators import validate_meeting_data, deduplicate_meetings
-from ..page_detector import detect_page_type
+from ..page_detector import detect_all_page_types
 from .container_detector import looks_like_meeting_container, find_meeting_containers
 from .date_extractor import extract_date_universal
 from .text_extractor import extract_title, split_paragraph_meetings
@@ -32,30 +33,27 @@ logger = setup_logger("universal_extractor")
 
 def extract_universal_meetings(soup: BeautifulSoup, base_url: str, start_date: str, end_date: str) -> List[MeetingMetadata]:
     """
-    Universal meeting extraction with smart strategy selection.
-    Detects page type first, then applies optimal strategies.
+    Universal meeting extraction with multi-pattern approach.
+    Detects ALL applicable patterns and extracts from each one.
     """
     all_meetings = []
     
-    page_type = detect_page_type(str(soup), base_url)
-    logger.info(f"Detected page type: {page_type}")
+    page_types = detect_all_page_types(str(soup), base_url)
+    logger.info(f"Detected page types: {page_types}")
     
-    if page_type == 'table':
+    if 'table' in page_types:
         table_meetings = extract_table_meetings(soup, base_url, start_date, end_date)
         if table_meetings:
             logger.info(f"Table extraction: {len(table_meetings)} meetings")
             all_meetings.extend(table_meetings)
-            deduplicated = deduplicate_meetings(all_meetings)
-            logger.info(f"Total: {len(deduplicated)} unique meetings")
-            return deduplicated
     
-    if page_type == 'calendar':
+    if 'calendar' in page_types:
         calendar_meetings = extract_calendar_style_meetings(soup, base_url, start_date, end_date)
         if calendar_meetings:
             logger.info(f"Calendar extraction: {len(calendar_meetings)} meetings")
             all_meetings.extend(calendar_meetings)
     
-    if page_type == 'paragraph':
+    if 'paragraph' in page_types:
         main_content = soup.find('main') or soup.find('div', class_=COMPILED_PATTERNS['content_area']) or soup.body
         if main_content:
             paragraphs = main_content.find_all('p')

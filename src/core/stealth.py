@@ -1,12 +1,11 @@
 """
-Anti-detection stealth configuration with user-agent rotation, viewport randomization, and fingerprint masking.
+Anti-detection stealth with fingerprint masking and user-agent rotation.
 
-Key Techniques:
-- User-agent rotation from realistic browser profiles
-- Viewport randomization for natural fingerprinting
-- Canvas fingerprinting noise injection
-- WebGL vendor spoofing
-- Navigator properties masking (webdriver, plugins, permissions)
+Techniques:
+- User-agent rotation (realistic browser profiles)
+- Viewport randomization (natural fingerprinting)
+- Canvas noise injection (bypasses fingerprinting)
+- WebGL/Navigator spoofing (masks automation signals)
 """
 import random
 from typing import Optional
@@ -102,6 +101,10 @@ class StealthManager:
         self._current_fingerprint = self._generate_fingerprint()
     
     async def apply_stealth_scripts(self, page) -> None:
+        """
+        Inject stealth scripts to mask automation signals.
+        Randomizes canvas, WebGL, and navigator properties.
+        """
         canvas_noise = self._current_fingerprint['canvas_noise']
         webgl_vendor = self._current_fingerprint['webgl_vendor']
         

@@ -37,7 +37,10 @@ class URLResolver:
         await self.http_client.aclose()
     
     async def resolve_url(self, url: str, url_type: str = 'video') -> Optional[str]:
-        """Main entry: resolve URL to downloadable form and verify it works."""
+        """
+        Resolve URL to downloadable form and verify it works.
+        Routes to document or media resolver based on type.
+        """
         self.logger.info(f"Resolving {url_type} URL: {url}")
         
         if self.rate_limiter:
@@ -51,9 +54,12 @@ class URLResolver:
         except Exception as e:
             self.logger.error(f"Error resolving {url}: {str(e)}")
             return None
-    
+            
     async def _resolve_document(self, url: str) -> Optional[str]:
-        """Resolve document URLs (PDFs, HTML)."""
+        """
+        Resolve document URLs (PDFs, HTML) and verify with HTTP HEAD.
+        Tries platform extraction first, then direct verification.
+        """
         resolved = await self._extract_platform_url(url)
         if resolved and resolved != url and await self._verify_document(resolved):
             self.logger.info(f"✓ Resolved to: {resolved}")
@@ -62,7 +68,10 @@ class URLResolver:
         return url if await self._verify_document(url) else None
     
     async def _resolve_media(self, url: str) -> Optional[str]:
-        """Resolve video/audio URLs."""
+        """
+        Resolve video/audio URLs and verify with yt-dlp.
+        Steps: 1) Try direct URL 2) Platform extraction 3) Browser HTML parsing
+        """
         if await self._verify_ytdlp(url, url):
             self.logger.info(f"✓ URL works directly: {url}")
             return url
@@ -81,7 +90,10 @@ class URLResolver:
         return None
     
     async def _extract_platform_url(self, url: str) -> Optional[str]:
-        """Route to platform-specific extractors."""
+        """
+        Route to platform-specific extractors based on domain.
+        Supports: Swagit, Granicus, ChampDS, CivicClerk, Viebit, Audiomack, etc.
+        """
         url_lower = url.lower()
         
         platform_map = {
@@ -105,7 +117,10 @@ class URLResolver:
         return None
     
     async def _extract_granicus(self, url: str) -> str:
-        """Extract MP4 from Granicus via HTTP."""
+        """
+        Extract MP4 URL from Granicus MediaPlayer via HTTP request.
+        Parses HTML to find archive-video.granicus.com MP4 links.
+        """
         try:
             response = await self.http_client.get(url, timeout=self.TIMEOUT_SHORT)
             if response.status_code == 200:
@@ -115,10 +130,13 @@ class URLResolver:
                     return mp4_match.group(1)
         except Exception as e:
             self.logger.warning(f"Granicus extraction failed: {str(e)}")
-        return url
-    
+            return url
+        
     async def _extract_savannah_docs(self, url: str) -> str:
-        """Extract PDF documents from Savannah minutes pages."""
+        """
+        Extract PDF links from Savannah minutes.html pages.
+        Parses HTML to find embedded PDF document links.
+        """
         try:
             response = await self.http_client.get(url, timeout=self.TIMEOUT_SHORT)
             if response.status_code == 200:
@@ -131,10 +149,13 @@ class URLResolver:
                         return pdf_url
         except Exception as e:
             self.logger.warning(f"Savannah docs extraction failed: {str(e)}")
-        return url
-    
+            return url
+        
     async def _extract_viebit(self, url: str) -> Optional[str]:
-        """Extract M3U8 from Viebit video player."""
+        """
+        Extract M3U8 stream from Viebit video player.
+        Captures network requests, parses pageConfig JSON, falls back to regex.
+        """
         if not self.browser_manager:
             return None
         
@@ -197,7 +218,10 @@ class URLResolver:
             return None
     
     async def _extract_civicclerk(self, url: str) -> Optional[str]:
-        """Extract video from CivicClerk React app."""
+        """
+        Extract video from CivicClerk React apps using JWPlayer.
+        Captures network requests and decodes tracking URL parameters.
+        """
         if not self.browser_manager:
             return None
         
@@ -260,7 +284,10 @@ class URLResolver:
             return None
     
     async def _extract_browser_media(self, url: str, media_ext: str, wait_ms: int = 3000, wait_until: str = 'domcontentloaded') -> Optional[str]:
-        """Generic browser extraction for media files."""
+        """
+        Generic browser-based media extraction for specific file extensions.
+        Captures network requests matching the extension (e.g., .m3u8, .mp3).
+        """
         if not self.browser_manager:
             return None
         
@@ -271,7 +298,7 @@ class URLResolver:
             page = await self.browser_manager.new_page(allow_resources=True)
             if not page:
                 return None
-            
+    
             page.on("request", lambda req: setattr(self, '_media_url', req.url) if media_ext in req.url else None)
             
             await page.goto(url, wait_until=wait_until, timeout=self.TIMEOUT_DEFAULT * 1000)
@@ -301,7 +328,10 @@ class URLResolver:
             return None
     
     async def _extract_from_page(self, url: str) -> List[str]:
-        """Fallback: extract media URLs from page HTML."""
+        """
+        Fallback: extract media URLs from page HTML via BeautifulSoup.
+        Searches video tags, iframes, scripts, and data attributes.
+        """
         if not self.browser_manager:
             return []
         
@@ -350,7 +380,10 @@ class URLResolver:
             return []
     
     async def _verify_ytdlp(self, url: str, original_url: str = None, max_retries: int = 2) -> bool:
-        """Verify URL with yt-dlp."""
+        """
+        Verify URL is downloadable using yt-dlp --simulate.
+        Handles referer headers for protected sites and retries on errors.
+        """
         for attempt in range(max_retries + 1):
             process = None
             try:
@@ -397,7 +430,10 @@ class URLResolver:
         return False
     
     async def _verify_document(self, url: str, max_retries: int = 2) -> bool:
-        """Verify document URL is accessible."""
+        """
+        Verify document URL is accessible using HTTP HEAD request.
+        Returns True on 200 status or if request fails (lenient for documents).
+        """
         for attempt in range(max_retries + 1):
             try:
                 response = await self.http_client.head(url, follow_redirects=True, timeout=self.TIMEOUT_SHORT)
@@ -412,7 +448,10 @@ class URLResolver:
         return True
     
     async def batch_resolve(self, url_list: List[dict]) -> List[str]:
-        """Resolve multiple URLs concurrently."""
+        """
+        Resolve multiple URLs concurrently with asyncio.gather.
+        Returns list of successfully resolved URLs.
+        """
         self.logger.info(f"Starting batch resolution of {len(url_list)} URLs")
         tasks = [self._resolve_item(item) for item in url_list]
         results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -421,7 +460,10 @@ class URLResolver:
         return resolved
     
     async def _resolve_item(self, item: dict) -> Optional[str]:
-        """Resolve single item from dict."""
+        """
+        Resolve single item from dict format {'url': str, 'type': str}.
+        Helper method for batch_resolve.
+        """
         url = item.get('url')
         url_type = item.get('type', 'video')
         return await self.resolve_url(url, url_type) if url else None

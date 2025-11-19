@@ -1,11 +1,11 @@
 """
-Playwright browser manager with stealth configuration and resource blocking for optimized web scraping.
+Browser manager with stealth mode and resource blocking for fast, undetected scraping.
 
-Key Features:
-- Automatic stealth script injection to bypass bot detection
-- Resource blocking (images, fonts, CSS, media) for faster page loads
-- Context recreation with fingerprint rotation on detection
-- Async context manager support for clean lifecycle management
+Features:
+- Stealth injection (bypasses bot detection)
+- Resource blocking (images/CSS/fonts - 3x faster loads)
+- Fingerprint rotation (on detection, creates new context)
+- Async lifecycle management
 """
 import asyncio
 from typing import Optional
@@ -56,6 +56,10 @@ class BrowserManager:
         return self._context
         
     async def new_page(self, allow_resources: bool = False) -> Page:
+        """
+        Create new page with stealth scripts and optional resource blocking.
+        Set allow_resources=True for media-heavy sites.
+        """
         context = await self._get_context()
         page = await context.new_page()
         
@@ -70,7 +74,10 @@ class BrowserManager:
         return page
         
     async def recreate_context(self) -> None:
-        """Recreate browser context with new fingerprint (for bot detection retry)."""
+        """
+        Recreate context with new fingerprint.
+        Use when bot detection occurs.
+        """
         if self._context:
             try:
                 await self._context.close()

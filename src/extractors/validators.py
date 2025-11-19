@@ -52,36 +52,48 @@ def validate_meeting_data(date: Optional[str], title: Optional[str], links: Dict
 
 def deduplicate_meetings(meetings):
     """
-    Deduplicate meetings using multiple criteria.
-    Key: date + all URLs (to allow multiple meetings per day with different content)
+    Smart deduplication: merge same meetings, preserve different ones.
+    
+    Logic:
+    - Same date + title + overlapping URLs → merge (same meeting, partial data)
+    - Same date + title + NO overlapping URLs → keep separate (different meetings)
+    - Same date + title + one has no URLs → merge (conservative, assume same)
     """
-    seen = {}
+    result = []
     
     for meeting in meetings:
-        # Create key from date + all non-null URLs
-        url_parts = []
-        if meeting.meeting_url:
-            url_parts.append(meeting.meeting_url)
-        if meeting.agenda_url:
-            url_parts.append(meeting.agenda_url)
-        if meeting.minutes_url:
-            url_parts.append(meeting.minutes_url)
+        merged = False
         
-        # If no URLs, use title as fallback (but this allows multiple same-date meetings)
-        url_key = '|'.join(sorted(url_parts)) if url_parts else meeting.title
-        key = (meeting.date, url_key)
+        for existing in result:
+            if meeting.date == existing.date and meeting.title == existing.title:
+                meeting_urls = {meeting.meeting_url, meeting.agenda_url, meeting.minutes_url}
+                existing_urls = {existing.meeting_url, existing.agenda_url, existing.minutes_url}
+                
+                meeting_urls.discard(None)
+                existing_urls.discard(None)
+                
+                if meeting_urls & existing_urls:
+                    if meeting.meeting_url and not existing.meeting_url:
+                        existing.meeting_url = meeting.meeting_url
+                    if meeting.agenda_url and not existing.agenda_url:
+                        existing.agenda_url = meeting.agenda_url
+                    if meeting.minutes_url and not existing.minutes_url:
+                        existing.minutes_url = meeting.minutes_url
+                    merged = True
+                    break
+                
+                elif not meeting_urls or not existing_urls:
+                    if meeting.meeting_url and not existing.meeting_url:
+                        existing.meeting_url = meeting.meeting_url
+                    if meeting.agenda_url and not existing.agenda_url:
+                        existing.agenda_url = meeting.agenda_url
+                    if meeting.minutes_url and not existing.minutes_url:
+                        existing.minutes_url = meeting.minutes_url
+                    merged = True
+                    break
         
-        if key in seen:
-            # Merge additional URLs if found
-            existing = seen[key]
-            if meeting.meeting_url and not existing.meeting_url:
-                existing.meeting_url = meeting.meeting_url
-            if meeting.agenda_url and not existing.agenda_url:
-                existing.agenda_url = meeting.agenda_url
-            if meeting.minutes_url and not existing.minutes_url:
-                existing.minutes_url = meeting.minutes_url
-        else:
-            seen[key] = meeting
+        if not merged:
+            result.append(meeting)
     
-    return list(seen.values())
+    return result
 
